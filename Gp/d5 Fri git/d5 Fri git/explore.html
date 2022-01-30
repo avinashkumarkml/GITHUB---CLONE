@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Explore</title>
+    <link rel="stylesheet" href="./style/navbar.css" />
+  </head>
+  <body>
+    <div id="container"></div>
+    <h1>Explore</h1>
+  </body>
+  <script type="module">
+    import navbar from "./component/navbar.js";
+
+    import getUser from "./script/getUser.js";
+    let container = document.getElementById("container");
+    container.innerHTML = navbar();
+
+    let input = document.getElementById("search-input");
+    input.addEventListener("keypress", searchUser);
+
+    async function searchUser(event) {
+      if (event.key === "Enter") {
+        
+        let query = input.value;
+
+        let response = await getUser(query);
+        console.log("response:", response);
+        let { avatar_url } = response;
+        document.getElementById("profile-img").src = avatar_url;
+      }
+    }
+  </script>
+</html>

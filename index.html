@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style\style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="navbar" class="fxd"></div>
+    <div id="main">
+      <button id="repo-btn">Get Repo</button>
+    </div>
+    <div id="mainDiv">
+      <img src="https://github.githubassets.com/images/modules/open_graph/github-octocat.png" alt="">
+    </div>
+</body>
+</html>
+<script type="module">
+    import navbar from "./component/navbar.js"
+    
+    import getUser from "./script/getUser.js"
+   
+    let Nav = document.getElementById("navbar");
+    Nav.innerHTML = navbar();
+    var response;
+    let input = document.getElementById("search-input")
+    input.innerHTML=""
+    let mainDiv = document.getElementById("mainDiv")
+
+    input.addEventListener("keypress",searchUser)
+
+    let btn = document.getElementById("repo-btn");
+    btn.addEventListener("click", getUserRepo);
+
+
+    async function searchUser(event) {
+      if (event.key === "Enter") {
+        
+        let query = input.value;
+        
+
+        response = await getUser(query);
+        let { avatar_url,login,repos_url } = response;
+        console.log('repos_url:', repos_url)
+        if(avatar_url==null){
+         alert("User Not Found.")
+        }
+        document.getElementById("profile-img").src = avatar_url;
+        mainDiv.innerHTML=""
+
+        let div = document.createElement("div");
+        div.setAttribute("class","divBox");
+
+        let img = document.createElement("img");
+        img.setAttribute("class","pic")
+        img.setAttribute("alt","User Profile Not Found")
+        img.src = avatar_url
+
+        let name = document.createElement("p");
+        name.setAttribute("class","txt")
+        name.innerText = login;
+
+        div.append(img,name)
+        mainDiv.append(div)
+        
+      }
+    }
+
+    async function getUserRepo(){
+      let res = await fetch(response.repos_url)
+       let repo_data = await res.json()
+      let data = repo_data
+      console.log('data:', data.length) 
+
+      for(var i = 0; i < data.length; i++){
+        let div = document.createElement("div");
+        div.setAttribute("class","repoBox");
+        let reps = document.createElement('p')
+        reps.setAttribute("class","repoBox");
+
+
+       
+        reps.innerHTML =  data[i].url
+        div.append(reps)
+        mainDiv.append(div)
+
+        
+      }
+      
+      
+      
+    }
+
+    
+    
+
+    
+
+</script>
